@@ -78,9 +78,16 @@ clear.addEventListener('click', () => {
 })
 const logTheResult = (result) => {
     let log = document.createElement('p');
-    log.innerHTML = `${firstValue} ${storedOperation} ${secondValue} = ${result}`;
+    let log2 = document.createElement('p');
+    let div = document.createElement('div');
+    div.classList.add('resultblock');
+    log.innerHTML = `${firstValue} ${storedOperation} ${secondValue} =`;
+    log2.innerHTML = `${result}`
     log.classList.add('results');
-    resultlog.appendChild(log);
+    log2.classList.add('results');
+    div.appendChild(log);
+    div.appendChild(log2);
+    resultlog.appendChild(div);
 
 }
 const operate = (operation) => {
@@ -133,18 +140,17 @@ document.body.addEventListener('keydown', (e) => {
         e.preventDefault();
     }
 })
-buttons.forEach(button => {
+/* buttons.forEach(button => {
     button.addEventListener('touchstart', () => {
         let number = button.value;
         numberFunction(number);
         let target = document.getElementById(`${button.value}`)
         target.classList.add('hover');
+        this.setTimeout(() => {
+            button.classList.remove('hover')
+        }, 100)
     })
-    button.addEventListener('touchend', () => {
-        let target = document.getElementById(`${button.value}`)
-        target.classList.remove('hover');
-    })
-})
+}) */
 
 const operations = document.querySelectorAll('.operation');
 operations.forEach(operation => {

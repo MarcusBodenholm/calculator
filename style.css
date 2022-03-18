@@ -92,8 +92,11 @@ button:active {
 }
 .results {
     margin: 0.3rem;
-    font-size: 1.2rem;
-    flex-wrap: wrap;
+    font-size: 1rem;
+}
+.resultblock {
+    margin: 0.3rem;
+    align-self: flex-start;
 }
 .tracker {
     height: 25%;
@@ -109,11 +112,11 @@ button:active {
     background-color: black;
 }
 #query {
-    font-size: 4.8em;
-    margin-right: 0.5rem;
+    font-size: 2.2em;
+    margin-right: 1rem;
 }
 #calculationTracker {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     position: relative;
     margin-bottom: 5px;
     margin-right: 1.2rem;
@@ -123,12 +126,23 @@ button:active {
         display: none;
     }
     html {
-        font-size: 15px;
+        font-size: 10px;
     }
     .calcarea {
         min-width: 100%;
     }
     .buttonarea {
         width: 100%;
+    }
+    #query {
+        font-size: 2rem;
+    }
+    .tracker {
+        max-width: 100%;
+    }
+
+    .container {
+        width: 35rem;
+        height: 45rem;
     }
 }
