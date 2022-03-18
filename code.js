@@ -14,11 +14,7 @@ buttons.forEach(button => {
         numberFunction(number);
     })
 })
-buttons.forEach(button => {
-    button.addEventListener('touchend', () => {
-        console.log(button.value);
-    })
-})
+
 const numberFunction = (number) => {
     if (startToggle) {
         text.textContent = number;
@@ -137,6 +133,19 @@ document.body.addEventListener('keydown', (e) => {
         e.preventDefault();
     }
 })
+buttons.forEach(button => {
+    button.addEventListener('touchstart', () => {
+        let number = button.value;
+        numberFunction(number);
+        let target = document.getElementById(`${button.value}`)
+        target.classList.add('hover');
+    })
+    button.addEventListener('touchend', () => {
+        let target = document.getElementById(`${button.value}`)
+        target.classList.remove('hover');
+    })
+})
+
 const operations = document.querySelectorAll('.operation');
 operations.forEach(operation => {
     operation.addEventListener('click', (e) => {
