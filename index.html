@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Calculator</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+        <script src="code.js" defer></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <section class="container">
+            <section class="calcarea">
+                <section class="tracker">
+                    <p id="calculationTracker"></p>
+                    <p id="query">0</p>
+                </section>
+                <section class="buttonarea">
+                    <section class="buttonrow">
+                        <button class="special button" id="clear" value="clear">Clear</button>
+                        <button class="special button" id="remove" value="clear">Remove</button>
+                        <button class="operation button" id="/"value="/">÷</button>
+                    </section>
+                    <section class="buttonrow">
+                        <button class="number button" id="7" value="7">7</button>
+                        <button class="number button" id="8" value="8">8</button>
+                        <button class="number button" id="9" value="9">9</button>
+                        <button class="operation button"id="*" value="x">X</button>
+                    </section>
+                    <section class="buttonrow">
+                        <button class="number button" id="4" value="4">4</button>
+                        <button class="number button" id="5" value="5">5</button>
+                        <button class="number button" id="6" value="6">6</button>
+                        <button class="operation button" id="-"value="-">-</button>
+                    </section>
+                    <section class="buttonrow">
+                        <button class="number button" id="1" value="1">1</button>
+                        <button class="number button" id="2" value="2">2</button>
+                        <button class="number button" id="3" value="3">3</button>
+                        <button class="operation button"id="+"value="+">+</button>
+                    </section>
+                    <section class="buttonrow">
+                        <button class="number button" id="0" value="0">0</button>
+                        <button class="decimal button" id="decimal" value=".">.</button>
+                        <button id="calculatebutton" class="special operation" value="=">=</button>
+                    </section>
+                </section>
+            </section>
+            <aside class="resultcontainer">
+            </aside>
+        </section>
+    </body>
+</html>
