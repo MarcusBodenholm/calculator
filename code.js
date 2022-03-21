@@ -6,7 +6,7 @@ let storedOperation = ''; //This stores the latest selected operation. Suggestio
 let newNumberToggle = false; //This toggle is set to true when an operation has been selected, and tells the code to begin a new numberline if a number is entered.
 let startToggle = true; //This tells the code to not consider the 0 that sits at the start. It's removed when entering any number
 let operatorHistory = []; //Used to keep track of the latest operations. 
-const resultlog = document.querySelector('.resultcontainer');
+const resultlog = document.querySelector('#resulttrack');
 const buttons = document.querySelectorAll('.number');
 buttons.forEach(button => {
     button.addEventListener('click', () => {
@@ -14,7 +14,6 @@ buttons.forEach(button => {
         numberFunction(number);
     })
 })
-
 const numberFunction = (number) => {
     if (startToggle) {
         text.textContent = number;
@@ -91,15 +90,21 @@ const logTheResult = (result) => {
 
 }
 const operate = (operation) => {
-    if (firstValue == '' && operation == '=') {
+    if (firstValue == '' && operation == '=') { 
+        //purpose is to NOT perform any operation if nothing has been inputted and = is pressed
         return;
     }
     if (!operatorHistory[0]) {
         if (operation !== '=') {
+        /*  Purpose is that if there's no operation stored and operation pressed is not =
+            then the operation is stored for the rest of the program. */
             operatorHistory.push(operation);
         }
     }
     if (storedOperation == '' && !startToggle && operatorHistory[0] || operatorHistory[operatorHistory.length-1] == '=' && operation !== '=' && !startToggle && operatorHistory[0]) {
+/*      A meaty if (Note to self: could probably be made simpler). It permits this if to proceed if
+        A) If there's no stored operation AND the startToggle (which is removed when a number is entered the first time) AND if an operation has been stored before
+        B) If the second to last operation is = AND the current operation is not = AND the start toggle is false AND there's an entry in the operatorHistory array. */
         storedOperation = operation;
         operatorHistory.push(operation)
         firstValue = Number(text.textContent);
@@ -107,6 +112,9 @@ const operate = (operation) => {
         newNumberToggle = true;
         calcTrack.textContent = `${firstValue} ${storedOperation}`;
     } else if (storedOperation !== '' || operation == '=' && !startToggle && operatorHistory[0]) {
+        /*This else if block executes in the following circumstances
+        A) If the current operation is not empty
+        B) If the operation is = AND the startToggle is false AND there's at least one entry in the operatorhistory array */
         if (operation == '=' && operatorHistory[operatorHistory.length-1] !== '=') {
             secondValue = Number(text.textContent);
         } else if (operatorHistory[operatorHistory.length-1] !== '=') {
@@ -140,18 +148,6 @@ document.body.addEventListener('keydown', (e) => {
         e.preventDefault();
     }
 })
-/* buttons.forEach(button => {
-    button.addEventListener('touchstart', () => {
-        let number = button.value;
-        numberFunction(number);
-        let target = document.getElementById(`${button.value}`)
-        target.classList.add('hover');
-        this.setTimeout(() => {
-            button.classList.remove('hover')
-        }, 100)
-    })
-}) */
-
 const operations = document.querySelectorAll('.operation');
 operations.forEach(operation => {
     operation.addEventListener('click', (e) => {

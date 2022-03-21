@@ -13,6 +13,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background: silver;
 }
 .container {
     width: 50rem;
@@ -20,6 +21,18 @@ body {
     border: 5px solid black;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 5px 10px, rgba(0, 0, 0, 0.5) 0px 10px 10px;
 
+}
+#calchistory > p {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+#calchistory {
+    align-self: center;
+    border-bottom: 3px solid black;
+    width: 100%;
+    display: flex;
+    align-items:center;
+    justify-content: center;
 }
 .number,
 .decimal {
@@ -81,6 +94,7 @@ button:active {
     height: 100%;
     min-width: 20%;
     max-width: 35%;
+    background: white;
     flex:auto;
     flex-wrap: nowrap;
     border: 3px solid black;
@@ -88,7 +102,16 @@ button:active {
     overflow:auto;
     flex-direction: column;
     align-items: center;
+}
+#resulttrack {
+    height: 100%; 
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow:auto;
+    flex-direction: column;
     justify-content: flex-end;
+    align-items: center;
 }
 .results {
     margin: 0.3rem;
@@ -101,6 +124,7 @@ button:active {
 .tracker {
     height: 25%;
     border: 3px solid black;
+    background: white;
     display: flex;
     flex-direction: column;
     justify-content: end;
@@ -121,12 +145,37 @@ button:active {
     margin-bottom: 5px;
     margin-right: 1.2rem;
 }
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 600px) {
     .resultcontainer {
         display: none;
     }
     html {
         font-size: 10px;
+    }
+    .calcarea {
+        min-width: 100%;
+    }
+    .buttonarea {
+        width: 100%;
+    }
+    #query {
+        font-size: 2rem;
+    }
+    .tracker {
+        max-width: 100%;
+    }
+
+    .container {
+        width: 35rem;
+        height: 45rem;
+    }
+}
+@media (min-width:601px) and (max-width: 800px) {
+    .resultcontainer {
+        display: none;
+    }
+    html {
+        font-size: 13px;
     }
     .calcarea {
         min-width: 100%;
