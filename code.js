@@ -171,6 +171,10 @@ const hoverEffect = (e) => {
     }, 100)
 }
 window.addEventListener('keydown', function(e) {
+    console.log(e.key)
+    if (e.key == 'Shift') {
+        return;
+    }
     if (Number(e.key) > -1 && Number(e.key) < 10) {
         numberFunction(Number(e.key));
         hoverEffect(e);
@@ -185,7 +189,7 @@ window.addEventListener('keydown', function(e) {
     } else if (e.key == ',' || e.key == '.' ) {
         decimalFunction();
         hoverEffect(e);
-    } else if (e.key = 'Backspace') {
+    } else if (e.key == 'Backspace') {
         removeFunction();
         hoverEffect(e);
     }
