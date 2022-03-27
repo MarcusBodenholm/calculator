@@ -67,12 +67,14 @@ const clearFunction = () => {
     calcTrack.textContent = '';
     startToggle = true;
     operatorHistory = [];
+    console.log('Reset called')
     while (resultlog.lastElementChild) {
         resultlog.removeChild(resultlog.lastElementChild);
     }
 }
 const clear = document.getElementById('clear');
-clear.addEventListener('click', () => {
+clear.addEventListener('click', (e) => {
+    e.stopPropagation();
     clearFunction();
 })
 const logTheResult = (result) => {
@@ -171,6 +173,9 @@ const hoverEffect = (e) => {
     }, 100)
 }
 window.addEventListener('keydown', function(e) {
+    if (e.key == 'Enter') {
+        e.preventDefault();
+    }
     console.log(e.key)
     if (e.key == 'Shift') {
         return;
@@ -193,6 +198,7 @@ window.addEventListener('keydown', function(e) {
         removeFunction();
         hoverEffect(e);
     }
+    e.stopPropagation();
 })
 const decimalFunction = () => {
     let decimalCheck = text.textContent.split('');
@@ -200,7 +206,7 @@ const decimalFunction = () => {
         if (Number(text.textContent) == 0) {
             text.textContent = '0.'
             startToggle = false;
-        } else if (secondValue == '') {
+        } else if (secondValue == '' && operatorHistory[0]) {
             text.textContent = '0.'
             newNumberToggle = false;
         } else {
