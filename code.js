@@ -156,7 +156,7 @@ operations.forEach(operation => {
         operate(e.target.value);
     })
 })
-const hoverEffect = (e) => {
+const clickEffect = (e) => {
     let button;
     if (e.key == 'Enter') {
         button = document.getElementById('calculatebutton')
@@ -182,21 +182,21 @@ window.addEventListener('keydown', function(e) {
     }
     if (Number(e.key) > -1 && Number(e.key) < 10) {
         numberFunction(Number(e.key));
-        hoverEffect(e);
+        clickEffect(e);
     } else if (e.key == '/' || e.key == '*' || e.key == '-' || e.key == '+' || e.key == 'Enter') {
         if (e.key == 'Enter') {
             operate('=');
-            hoverEffect(e);
+            clickEffect(e);
         } else  {
             operate(e.key);
-            hoverEffect(e);
+            clickEffect(e);
         }
     } else if (e.key == ',' || e.key == '.' ) {
         decimalFunction();
-        hoverEffect(e);
+        clickEffect(e);
     } else if (e.key == 'Backspace') {
         removeFunction();
-        hoverEffect(e);
+        clickEffect(e);
     }
     e.stopPropagation();
 })
