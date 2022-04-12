@@ -25,24 +25,19 @@ const numberFunction = (number) => {
         text.textContent += number;
     }
 }
-const roundingFunction = (nr) => {
-    return Math.round((nr + Number.EPSILON) * 100) / 100;
-}
+const roundingFunction = (nr) => Math.round((nr + Number.EPSILON) * 100) / 100;
+    
 const calculate = (firstNumber, secondNumber, operation) => {
     let firstNr = Number(firstNumber)
     let secondNr = Number(secondNumber)
     if (operation == '+') {
-        let result = firstNr + secondNr;
-        return roundingFunction(result);
+        return roundingFunction(firstNr + secondNr);
     } else if (operation == '-') {
-        let result = firstNr - secondNr;
-        return roundingFunction(result);
+        return roundingFunction(firstNr - secondNr);
     } else if (operation == 'x' || operation == '*') {
-        let result = firstNr * secondNr;
-        return roundingFunction(result);
+        return roundingFunction(firstNr * secondNr);
     } else if (operation == '/') {
-        let result = firstNr / secondNr;
-        return roundingFunction(result);
+        return roundingFunction(firstNr / secondNr);
     } 
 }
 const removeFunction = () => {
@@ -50,9 +45,7 @@ const removeFunction = () => {
     let newText = text.split('');
     newText.pop();
     document.getElementById('query').textContent = newText.join('');
-    let newFirstNumber = firstValue.split('');
-    newFirstNumber.pop();
-    firstValue = newFirstNumber.join('');
+    // firstValue.split('').pop().join('');
 }
 const remove = document.getElementById('remove');
 remove.addEventListener('click', () => {
@@ -67,7 +60,6 @@ const clearFunction = () => {
     calcTrack.textContent = '';
     startToggle = true;
     operatorHistory = [];
-    console.log('Reset called')
     while (resultlog.lastElementChild) {
         resultlog.removeChild(resultlog.lastElementChild);
     }
@@ -79,16 +71,16 @@ clear.addEventListener('click', (e) => {
 })
 const logTheResult = (result) => {
     let log = document.createElement('p');
-    let log2 = document.createElement('p');
-    let div = document.createElement('div');
-    div.classList.add('resultblock');
+    let display = document.createElement('p');
+    let archive = document.createElement('div');
+    archive.classList.add('resultblock');
     log.innerHTML = `${firstValue} ${storedOperation} ${secondValue} =`;
-    log2.innerHTML = `${result}`
+    display.innerHTML = `${result}`
     log.classList.add('results');
-    log2.classList.add('results');
-    div.appendChild(log);
-    div.appendChild(log2);
-    resultlog.appendChild(div);
+    display.classList.add('results');
+    archive.appendChild(log);
+    archive.appendChild(display);
+    resultlog.appendChild(archive);
 
 }
 const operate = (operation) => {
@@ -176,7 +168,6 @@ window.addEventListener('keydown', function(e) {
     if (e.key == 'Enter') {
         e.preventDefault();
     }
-    console.log(e.key)
     if (e.key == 'Shift') {
         return;
     }
