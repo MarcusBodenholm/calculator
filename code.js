@@ -1,11 +1,13 @@
-let text = document.getElementById('query');
-let calcTrack = document.getElementById('calculationTracker');
-let firstValue = '';
-let secondValue = '';
-let storedOperation = ''; //This stores the latest selected operation. Suggestion: Refactor code to utilize operatorHistory?
-let newNumberToggle = false; //This toggle is set to true when an operation has been selected, and tells the code to begin a new numberline if a number is entered.
-let startToggle = true; //This tells the code to not consider the 0 that sits at the start. It's removed when entering any number
-let operatorHistory = []; //Used to keep track of the latest operations. 
+const calc = {
+    text: document.getElementById('query'),
+    calcTrack: document.getElementById('calculationTracker'),
+    firstValue: '',
+    secondValue: '',
+    storedOperation: '',
+    newNumberToggle: false,
+    startToggle: true,
+    operatorHistory: []
+}
 const resultlog = document.querySelector('#resulttrack');
 const buttons = document.querySelectorAll('.number');
 buttons.forEach(button => {
@@ -15,14 +17,14 @@ buttons.forEach(button => {
     })
 })
 const numberFunction = (number) => {
-    if (startToggle) {
-        text.textContent = number;
-        startToggle = false;
-    } else if (newNumberToggle) {
-        text.textContent = number;
-        newNumberToggle = false;
+    if (calc.startToggle) {
+        calc.text.textContent = number;
+        calc.startToggle = false;
+    } else if (calc.newNumberToggle) {
+        calc.text.textContent = number;
+        calc.newNumberToggle = false;
     } else {
-        text.textContent += number;
+        calc.text.textContent += number;
     }
 }
 const roundingFunction = (nr) => Math.round((nr + Number.EPSILON) * 100) / 100;
@@ -45,21 +47,20 @@ const removeFunction = () => {
     let newText = text.split('');
     newText.pop();
     document.getElementById('query').textContent = newText.join('');
-    // firstValue.split('').pop().join('');
 }
 const remove = document.getElementById('remove');
 remove.addEventListener('click', () => {
     removeFunction();
 })
 const clearFunction = () => {
-    text.textContent = '0';
-    newNumberToggle = false;
-    storedOperation = '';
-    firstValue = '';
-    secondValue = '';
-    calcTrack.textContent = '';
-    startToggle = true;
-    operatorHistory = [];
+    calc.text.textContent = '0';
+    calc.newNumberToggle = false;
+    calc.storedOperation = '';
+    calc.firstValue = '';
+    calc.secondValue = '';
+    calc.calcTrack.textContent = '';
+    calc.startToggle = true;
+    calc.operatorHistory = [];
     while (resultlog.lastElementChild) {
         resultlog.removeChild(resultlog.lastElementChild);
     }
@@ -74,7 +75,7 @@ const logTheResult = (result) => {
     let display = document.createElement('p');
     let archive = document.createElement('div');
     archive.classList.add('resultblock');
-    log.innerHTML = `${firstValue} ${storedOperation} ${secondValue} =`;
+    log.innerHTML = `${calc.firstValue} ${calc.storedOperation} ${calc.secondValue} =`;
     display.innerHTML = `${result}`
     log.classList.add('results');
     display.classList.add('results');
@@ -84,56 +85,56 @@ const logTheResult = (result) => {
 
 }
 const operate = (operation) => {
-    if (firstValue == '' && operation == '=') { 
+    if (calc.firstValue == '' && operation == '=') { 
         //purpose is to NOT perform any operation if nothing has been inputted and = is pressed
         return;
     }
-    if (!operatorHistory[0]) {
-        if (operation !== '=') {
+    if (!calc.operatorHistory[0] && operation !== "=") {
         /*  Purpose is that if there's no operation stored and operation pressed is not =
             then the operation is stored for the rest of the program. */
-            operatorHistory.push(operation);
-        }
+            calc.operatorHistory.push(operation);
     }
-    if (storedOperation == '' && !startToggle && operatorHistory[0] || operatorHistory[operatorHistory.length-1] == '=' && operation !== '=' && !startToggle && operatorHistory[0]) {
+    if (calc.storedOperation == '' && !calc.startToggle && calc.operatorHistory[0] || 
+    calc.operatorHistory[calc.operatorHistory.length-1] == '=' && operation !== '=' 
+    && !calc.startToggle && calc.operatorHistory[0]) {
 /*      A meaty if (Note to self: could probably be made simpler). It permits this if to proceed if
         A) If there's no stored operation AND the startToggle (which is removed when a number is entered the first time) AND if an operation has been stored before
         B) If the second to last operation is = AND the current operation is not = AND the start toggle is false AND there's an entry in the operatorHistory array. */
-        storedOperation = operation;
-        operatorHistory.push(operation)
-        firstValue = Number(text.textContent);
-        startToggle = false;
-        newNumberToggle = true;
-        calcTrack.textContent = `${firstValue} ${storedOperation}`;
-    } else if (storedOperation !== '' || operation == '=' && !startToggle && operatorHistory[0]) {
+        calc.storedOperation = operation;
+        calc.operatorHistory.push(operation)
+        calc.firstValue = Number(calc.text.textContent);
+        calc.startToggle = false;
+        calc.newNumberToggle = true;
+        calc.calcTrack.textContent = `${calc.firstValue} ${calc.storedOperation}`;
+    } else if (calc.storedOperation !== '' || operation == '=' && !calc.startToggle && calc.operatorHistory[0]) {
         /*This else if block executes in the following circumstances
         A) If the current operation is not empty
         B) If the operation is = AND the startToggle is false AND there's at least one entry in the operatorhistory array */
-        if (operation == '=' && operatorHistory[operatorHistory.length-1] !== '=') {
-            secondValue = Number(text.textContent);
-        } else if (operatorHistory[operatorHistory.length-1] !== '=') {
-            secondValue = Number(text.textContent);
+        if (operation == '=' && calc.operatorHistory[calc.operatorHistory.length-1] !== '=') {
+            calc.secondValue = Number(calc.text.textContent);
+        } else if (calc.operatorHistory[calc.operatorHistory.length-1] !== '=') {
+            calc.secondValue = Number(calc.text.textContent);
         }
-        operatorHistory.push(operation);
-        let result = calculate(firstValue, secondValue, storedOperation)
+        calc.operatorHistory.push(operation);
+        let result = calculate(calc.firstValue, calc.secondValue, calc.storedOperation)
         if (result == 'Infinity') {
-            text.textContent = 'Nice try'
-            calcTrack.textContent = "That's infinite";
+            calc.text.textContent = 'Nice try'
+            calc.calcTrack.textContent = "That's infinite";
             logTheResult('Nice try');
-            newNumberToggle = true;
-            storedOperation = '';
-            operatorHistory = [];
-            firstValue = '';
-            secondValue = '';
+            calc.newNumberToggle = true;
+            calc.storedOperation = '';
+            calc.operatorHistory = [];
+            calc.firstValue = '';
+            calc.secondValue = '';
         } else {
             logTheResult(result)
-            calcTrack.textContent = `${firstValue} ${storedOperation} ${secondValue} =`; 
-            firstValue = result;   
-            text.textContent = result;
+            calc.calcTrack.textContent = `${calc.firstValue} ${calc.storedOperation} ${calc.secondValue} =`; 
+            calc.firstValue = result;   
+            calc.text.textContent = result;
             if (operation !== ('=')) {
-                storedOperation = operation;
+                calc.storedOperation = operation;
             }
-            newNumberToggle = true;
+            calc.newNumberToggle = true;
         }
     }
 }
@@ -194,12 +195,12 @@ window.addEventListener('keydown', function(e) {
 const decimalFunction = () => {
     let decimalCheck = text.textContent.split('');
     if (!decimalCheck.includes('.')) {
-        if (Number(text.textContent) == 0) {
-            text.textContent = '0.'
-            startToggle = false;
-        } else if (secondValue == '' && operatorHistory[0]) {
-            text.textContent = '0.'
-            newNumberToggle = false;
+        if (Number(calc.text.textContent) == 0) {
+            calc.text.textContent = '0.'
+            calc.startToggle = false;
+        } else if (calc.secondValue == '' && calc.operatorHistory[0]) {
+            calc.text.textContent = '0.'
+            calc.newNumberToggle = false;
         } else {
             numberFunction('.');
         }
