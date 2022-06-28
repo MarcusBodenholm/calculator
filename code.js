@@ -6,46 +6,55 @@ const calc = {
     storedOperation: '',
     newNumberToggle: false,
     startToggle: true,
-    operatorHistory: []
+    equalToggle: false,
+    firstNr: 0,
+    secondNr: 0,
+    operatorHistory: [],
+    "+": function(){
+        return roundingFunction(this.firstNr +this.secondNr);
+    },
+    "-": function(){
+        return roundingFunction(this.firstNr-this.secondNr);
+    },
+    "/": function(){
+        return roundingFunction(this.firstNr/this.secondNr);
+    },
+    "*": function(){
+        return roundingFunction(this.firstNr*this.secondNr);
+    },
+    calculate(){
+        this.firstNr = Number(this.firstValue);
+        this.secondNr = Number(this.secondValue);
+        return calc[this.storedOperation]();
+    },
+    numberFunction(nr){
+        calc.equalToggle = false;
+        if(this.startToggle){
+            this.text.textContent = nr;
+            this.startToggle = false;
+        } else if (calc.newNumberToggle){
+            this.text.textContent = nr;
+            this.newNumberToggle = false;
+        } else {
+            this.text.textContent += nr;
+        }
+    }
 }
 const resultlog = document.querySelector('#resulttrack');
 const buttons = document.querySelectorAll('.number');
 buttons.forEach(button => {
     button.addEventListener('click', () => {
         let number = button.value;
-        numberFunction(number);
+        calc.numberFunction(number);
     })
 })
-const numberFunction = (number) => {
-    if (calc.startToggle) {
-        calc.text.textContent = number;
-        calc.startToggle = false;
-    } else if (calc.newNumberToggle) {
-        calc.text.textContent = number;
-        calc.newNumberToggle = false;
-    } else {
-        calc.text.textContent += number;
-    }
-}
 const roundingFunction = (nr) => Math.round((nr + Number.EPSILON) * 100) / 100;
-    
-const calculate = (firstNumber, secondNumber, operation) => {
-    let firstNr = Number(firstNumber)
-    let secondNr = Number(secondNumber)
-    if (operation == '+') {
-        return roundingFunction(firstNr + secondNr);
-    } else if (operation == '-') {
-        return roundingFunction(firstNr - secondNr);
-    } else if (operation == 'x' || operation == '*') {
-        return roundingFunction(firstNr * secondNr);
-    } else if (operation == '/') {
-        return roundingFunction(firstNr / secondNr);
-    } 
-}
 const removeFunction = () => {
     let text = document.getElementById('query').textContent;
     let newText = text.split('');
     newText.pop();
+    calc.newNumberToggle = false;
+    calc.equalToggle = false;
     document.getElementById('query').textContent = newText.join('');
 }
 const remove = document.getElementById('remove');
@@ -60,6 +69,7 @@ const clearFunction = () => {
     calc.secondValue = '';
     calc.calcTrack.textContent = '';
     calc.startToggle = true;
+    calc.equalToggle = false;
     calc.operatorHistory = [];
     while (resultlog.lastElementChild) {
         resultlog.removeChild(resultlog.lastElementChild);
@@ -84,44 +94,42 @@ const logTheResult = (result) => {
     resultlog.appendChild(archive);
 
 }
-const operate = (operation) => {
-    if (calc.firstValue == '' && operation == '=') { 
-        //purpose is to NOT perform any operation if nothing has been inputted and = is pressed
-        return;
-    }
-    if (!calc.operatorHistory[0] && operation !== "=") {
+function control() {
+    if (!calc.operatorHistory[0] && !calc.equalToggle) {
         /*  Purpose is that if there's no operation stored and operation pressed is not =
             then the operation is stored for the rest of the program. */
-            calc.operatorHistory.push(operation);
+            calc.operatorHistory.push(calc.storedOperation);
     }
     if (calc.storedOperation == '' && !calc.startToggle && calc.operatorHistory[0] || 
-    calc.operatorHistory[calc.operatorHistory.length-1] == '=' && operation !== '=' 
-    && !calc.startToggle && calc.operatorHistory[0]) {
+    !calc.equalToggle && !calc.startToggle && calc.operatorHistory[0]) {
 /*      A meaty if (Note to self: could probably be made simpler). It permits this if to proceed if
-        A) If there's no stored operation AND the startToggle (which is removed when a number is entered the first time) AND if an operation has been stored before
-        B) If the second to last operation is = AND the current operation is not = AND the start toggle is false AND there's an entry in the operatorHistory array. */
-        calc.storedOperation = operation;
-        calc.operatorHistory.push(operation)
+        A) If there's no stored operation AND the startToggle is false (which is set to false when a number is entered the first time) 
+        AND if an operation has been stored before
+        B) If the second to last operation is = AND the current operation is not = AND the start toggle is false 
+        AND there's an entry in the operatorHistory array. */
+        calc.operatorHistory.push(calc.storedOperation)
         calc.firstValue = Number(calc.text.textContent);
         calc.startToggle = false;
         calc.newNumberToggle = true;
         calc.calcTrack.textContent = `${calc.firstValue} ${calc.storedOperation}`;
-    } else if (calc.storedOperation !== '' || operation == '=' && !calc.startToggle && calc.operatorHistory[0]) {
+    } else if (calc.operatorHistory[calc.operatorHistory.length-1] !== '' || 
+                calc.equalToggle && !calc.startToggle && calc.operatorHistory[0]) {
         /*This else if block executes in the following circumstances
         A) If the current operation is not empty
         B) If the operation is = AND the startToggle is false AND there's at least one entry in the operatorhistory array */
-        if (operation == '=' && calc.operatorHistory[calc.operatorHistory.length-1] !== '=') {
+        if (calc.equalToggle && calc.operatorHistory[calc.operatorHistory.length-1] !== '='){
             calc.secondValue = Number(calc.text.textContent);
-        } else if (calc.operatorHistory[calc.operatorHistory.length-1] !== '=') {
-            calc.secondValue = Number(calc.text.textContent);
+            calc.operatorHistory.push('=')
+        } else if (!calc.equalToggle) {
+            calc.operatorHistory.push(calc.storedOperation);
         }
-        calc.operatorHistory.push(operation);
-        let result = calculate(calc.firstValue, calc.secondValue, calc.storedOperation)
+        let result = calc.calculate()
         if (result == 'Infinity') {
             calc.text.textContent = 'Nice try'
             calc.calcTrack.textContent = "That's infinite";
             logTheResult('Nice try');
             calc.newNumberToggle = true;
+            calc.equalToggle = false;
             calc.storedOperation = '';
             calc.operatorHistory = [];
             calc.firstValue = '';
@@ -131,10 +139,6 @@ const operate = (operation) => {
             calc.calcTrack.textContent = `${calc.firstValue} ${calc.storedOperation} ${calc.secondValue} =`; 
             calc.firstValue = result;   
             calc.text.textContent = result;
-            if (operation !== ('=')) {
-                calc.storedOperation = operation;
-            }
-            calc.newNumberToggle = true;
         }
     }
 }
@@ -146,19 +150,32 @@ document.body.addEventListener('keydown', (e) => {
 const operations = document.querySelectorAll('.operation');
 operations.forEach(operation => {
     operation.addEventListener('click', (e) => {
-        operate(e.target.value);
+        if (e.target.value == '=') {
+            if (calc.firstValue === ''){
+                return;
+            } else {
+                calc.equalToggle = true;
+                control();
+                clickEffect(e);
+            }
+        } else  {
+            calc.storedOperation = e.target.value;
+            control();
+            clickEffect(e);
+        }
     })
 })
-const clickEffect = (e) => {
+function clickEffect(e) {
+    console.log(e)
     let button;
-    if (e.key == 'Enter') {
+    if (e.key == 'Enter' || e.target.value === '=') {
         button = document.getElementById('calculatebutton')
     } else if (e.key == 'Backspace') {
         button = document.getElementById('remove')
     } else if (e.key == ',' || e.key == '.') {
         button = document.getElementById('decimal')
     } else {
-        button = document.getElementById(`${e.key}`)
+        button = document.getElementById(`${e.key ? e.key : e.target.value}`)
     };
     button.classList.add('hover');
     this.setTimeout(() => {
@@ -173,14 +190,20 @@ window.addEventListener('keydown', function(e) {
         return;
     }
     if (Number(e.key) > -1 && Number(e.key) < 10) {
-        numberFunction(Number(e.key));
+        calc.numberFunction(Number(e.key));
         clickEffect(e);
     } else if (e.key == '/' || e.key == '*' || e.key == '-' || e.key == '+' || e.key == 'Enter') {
         if (e.key == 'Enter') {
-            operate('=');
-            clickEffect(e);
+            if (calc.firstValue === ''){
+                return;
+            } else {
+                calc.equalToggle = true;
+                control();
+                clickEffect(e);
+            }
         } else  {
-            operate(e.key);
+            calc.storedOperation = e.key;
+            control();
             clickEffect(e);
         }
     } else if (e.key == ',' || e.key == '.' ) {
@@ -202,7 +225,7 @@ const decimalFunction = () => {
             calc.text.textContent = '0.'
             calc.newNumberToggle = false;
         } else {
-            numberFunction('.');
+            calc.numberFunction('.');
         }
     }
 }
