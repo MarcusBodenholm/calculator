@@ -1,8 +1,7 @@
 # Calculator
 
 A project to make a calculator using HTML, CSS & JavaScript, as part of the Odin Project. 
-The idea was to have it mirror the windows calculator app's behavior. Such as being able to repeatedly execute the same calculation several times in a row, 
-remove and alter the result in order to use that for new calculations etc. 
+This calculator includes a log with all your calculations, and much like the Windows calculator, you can click on a result to bring it back and continue using it for further calculations!
 
 **Live preview:** [here](https://shedcape.github.io/calculator/)
 
@@ -23,7 +22,8 @@ remove and alter the result in order to use that for new calculations etc.
 * Used HTML5 to create the structure
 * Used CSS3 flex to create the layout
 * Used Git and GitHub for project management
-* Tried to model the basic functionality of the Windows calculator. Key goal was to permit the ability to execute = repeatedly to repeat the previous indicated operation. 
+* Used JavaScript for functionality
+
 
 ### What I learned
 * Better knowledge of JavaScript
