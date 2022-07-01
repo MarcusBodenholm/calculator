@@ -10,23 +10,23 @@ const calc = {
     firstNr: 0,
     secondNr: 0,
     "+": function(){
-        return roundingFunction(this.firstNr +this.secondNr);
+        return round(this.firstNr +this.secondNr);
     },
     "-": function(){
-        return roundingFunction(this.firstNr-this.secondNr);
+        return round(this.firstNr-this.secondNr);
     },
     "/": function(){
-        return roundingFunction(this.firstNr/this.secondNr);
+        return round(this.firstNr/this.secondNr);
     },
     "*": function(){
-        return roundingFunction(this.firstNr*this.secondNr);
+        return round(this.firstNr*this.secondNr);
     },
     calculate(){
         this.firstNr = Number(this.firstValue);
         this.secondNr = Number(this.secondValue);
         return calc[this.storedOperation]();
     },
-    numberFunction(nr){
+    addNumber(nr){
         calc.equalToggle = false;
         if(this.startToggle){
             this.text.textContent = nr;
@@ -43,12 +43,11 @@ const resultlog = document.querySelector('#resulttrack');
 const buttons = document.querySelectorAll('.number');
 buttons.forEach(button => {
     button.addEventListener('click', () => {
-        let number = button.value;
-        calc.numberFunction(number);
+        calc.addNumber(button.value);
     })
 })
-const roundingFunction = (nr) => Math.round((nr + Number.EPSILON) * 100) / 100;
-const removeFunction = () => {
+const round = (nr) => Math.round((nr + Number.EPSILON) * 100) / 100;
+const remove = () => {
     let text = document.getElementById('query').textContent;
     let newText = text.split('');
     newText.pop();
@@ -56,11 +55,11 @@ const removeFunction = () => {
     calc.equalToggle = false;
     document.getElementById('query').textContent = newText.join('');
 }
-const remove = document.getElementById('remove');
-remove.addEventListener('click', () => {
-    removeFunction();
+const removeButton = document.getElementById('remove');
+removeButton.addEventListener('click', () => {
+    remove();
 })
-const clearFunction = () => {
+const clear = () => {
     calc.text.textContent = '0';
     calc.newNumberToggle = false;
     calc.storedOperation = '';
@@ -79,7 +78,7 @@ clearLogButton.addEventListener('click', () => {
 const clearButton = document.getElementById('clear');
 clearButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    clearFunction();
+    clear();
 })
 const logTheResult = (result) => {
     let log = document.createElement('p');
@@ -98,7 +97,6 @@ function recoverResult(archive){
     calc.text.textContent = archive.result;
 }
 document.body.addEventListener('click', (e)=> {
-    console.log(e.target.classList.value)
     if (e.target.classList.value === 'results'){
         let divided = e.target.textContent.split(' ');
         const archive = {
@@ -111,7 +109,7 @@ document.body.addEventListener('click', (e)=> {
     }
 })
 function execute(){
-    if (calc.firstValue === ''){
+    if (calc.firstValue === ''|| calc.storedOperation === ''){
         return;
     }
     if (calc.equalToggle){
@@ -194,7 +192,7 @@ window.addEventListener('keydown', function(e) {
         return;
     }
     if (Number(e.key) > -1 && Number(e.key) < 10) {
-        calc.numberFunction(Number(e.key));
+        calc.addNumber(Number(e.key));
         clickEffect(e);
     } else if (e.key == '/' || e.key == '*' || e.key == '-' || e.key == '+' || e.key == 'Enter') {
         if (e.key == 'Enter') {
@@ -205,15 +203,15 @@ window.addEventListener('keydown', function(e) {
             clickEffect(e);
         }
     } else if (e.key == ',' || e.key == '.' ) {
-        decimalFunction();
+        decimal();
         clickEffect(e);
     } else if (e.key == 'Backspace') {
-        removeFunction();
+        remove();
         clickEffect(e);
     }
     e.stopPropagation();
 })
-const decimalFunction = () => {
+function decimal() {
     if (!calc.text.textContent.includes('.')) {
         if (Number(calc.text.textContent) == 0) {
             calc.text.textContent = '0.'
@@ -222,11 +220,11 @@ const decimalFunction = () => {
             calc.text.textContent = '0.'
             calc.newNumberToggle = false;
         } else {
-            calc.numberFunction('.');
+            calc.addNumber('.');
         }
     }
 }
-const decimal = document.querySelector('.decimal');
-decimal.addEventListener('click', () => {
-    decimalFunction();
+const decimalButton = document.querySelector('.decimal');
+decimalButton.addEventListener('click', () => {
+    decimal();
 })
