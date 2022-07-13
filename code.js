@@ -1,6 +1,8 @@
 'use strict';
 
-const round = (nr) => Math.round((nr + Number.EPSILON) * 100) / 100;
+import round from "./modules/round.js"
+import remove from "./modules/remove.js"
+import clickEffect from "./modules/clickEffect.js";
 
 /**
  * The calc object literal houses almost all the variables the
@@ -52,6 +54,17 @@ const calc = {
       this.text.textContent += nr;
     }
   },
+  clear() {
+    this.text.textContent = '0';
+    this.newNumberToggle = false;
+    this.storedOperation = '';
+    this.firstValue = '';
+    this.secondValue = '';
+    this.calcTrack.textContent = '';
+    this.startToggle = true;
+    this.equalToggle = false;
+  }
+
 };
 
 const resultlog = document.querySelector('#resulttrack');
@@ -64,37 +77,15 @@ buttons.forEach((button) => {
   });
 });
 
-function remove() {
-  const text = document.getElementById('query').textContent;
-  const newText = text.split('');
-  newText.pop();
-  calc.newNumberToggle = false;
-  calc.equalToggle = false;
-  document.getElementById('query').textContent = newText.join('');
-}
 
 const removeButton = document.getElementById('remove');
 
 removeButton.addEventListener('click', () => {
   remove();
+  calc.newNumberToggle = false;
+  calc.equalToggle = false;
 });
 
-/**
- * The clear function, and associated eventlisteners purpose is
- * simply to reset the calculator. The clear function only resets the
- * ongoing calculations, while the clearLogButton's event listener
- * clears only the log.
- */
-function clear() {
-  calc.text.textContent = '0';
-  calc.newNumberToggle = false;
-  calc.storedOperation = '';
-  calc.firstValue = '';
-  calc.secondValue = '';
-  calc.calcTrack.textContent = '';
-  calc.startToggle = true;
-  calc.equalToggle = false;
-}
 
 const clearLogButton = document.getElementById('clearlog');
 
@@ -108,7 +99,7 @@ const clearButton = document.getElementById('clear');
 
 clearButton.addEventListener('click', (e) => {
   e.stopPropagation();
-  clear();
+  calc.clear();
 });
 
 // The logTheResult function creates tje log entry when a calculation is performed.
@@ -198,28 +189,6 @@ function control(operation) {
   calc.startToggle = false;
   calc.firstValue = Number(calc.text.textContent);
   calc.calcTrack.textContent = `${calc.firstValue} ${calc.storedOperation}`;
-}
-
-/**
- * This function briefly adds a CSS class of hover to
- * the relevant element, and removes it.
- * Thereby simulating a click.
- */
-function clickEffect(e) {
-  let button;
-  if (e.key === 'Enter' || e.target.value === '=') {
-    button = document.getElementById('calculatebutton');
-  } else if (e.key === 'Backspace') {
-    button = document.getElementById('remove');
-  } else if (e.key === ',' || e.key === '.') {
-    button = document.getElementById('decimal');
-  } else {
-    button = document.getElementById(`${e.key ? e.key : e.target.value}`);
-  }
-  button.classList.add('hover');
-  setTimeout(() => {
-    button.classList.remove('hover');
-  }, 100);
 }
 
 // An eventlistener to prevent the default action of /
