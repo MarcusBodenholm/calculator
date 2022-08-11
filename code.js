@@ -12,55 +12,50 @@ import clickEffect from "./modules/clickEffect.js";
  * optimal for such simple executions, but they are mainly done so
  * for experimentation.
  */
+let input = document.getElementById('query');
+let calcTracker = document.getElementById('calculationTracker');
+let firstValue = '';
+let secondValue = '';
+let storedOperation = '';
+
 const calc = {
-  text: document.getElementById('query'),
-  calcTrack: document.getElementById('calculationTracker'),
-  firstValue: '',
-  secondValue: '',
-  storedOperation: '',
   newNumberToggle: false,
   startToggle: true,
   equalToggle: false,
-  firstNr: 0,
-  secondNr: 0,
   '+': function () {
-    return round(this.firstNr + this.secondNr);
+    return round(Number(firstValue) + Number(secondValue));
   },
   '-': function () {
-    return round(this.firstNr - this.secondNr);
+    return round(Number(firstValue) - Number(secondValue));
   },
   '/': function () {
-    return round(this.firstNr / this.secondNr);
+    return round(Number(firstValue) / Number(secondValue));
   },
   '*': function () {
-    return round(this.firstNr * this.secondNr);
-  },
-  update() {
-    this.firstNr = Number(this.firstValue);
-    this.secondNr = Number(this.secondValue);
+    return round(Number(firstValue) * Number(secondValue));
   },
   calculate() {
-    return calc[this.storedOperation]();
+    return calc[storedOperation]();
   },
   addNumber(nr) {
-    calc.equalToggle = false;
+    this.equalToggle = false;
     if (this.startToggle) {
-      this.text.textContent = nr;
+      input.textContent = nr;
       this.startToggle = false;
-    } else if (calc.newNumberToggle) {
-      this.text.textContent = nr;
+    } else if (this.newNumberToggle) {
+      input.textContent = nr;
       this.newNumberToggle = false;
     } else {
-      this.text.textContent += nr;
+      input.textContent += nr;
     }
   },
   clear() {
-    this.text.textContent = '0';
+    input.textContent = '0';
     this.newNumberToggle = false;
-    this.storedOperation = '';
-    this.firstValue = '';
-    this.secondValue = '';
-    this.calcTrack.textContent = '';
+    storedOperation = '';
+    firstValue = '';
+    secondValue = '';
+    calcTracker.textContent = '';
     this.startToggle = true;
     this.equalToggle = false;
   }
@@ -107,8 +102,9 @@ function logTheResult(result) {
   const log = document.createElement('p');
   const archive = document.createElement('div');
   archive.classList.add('resultblock');
-  log.innerHTML = `${calc.firstValue} ${calc.storedOperation} ${calc.secondValue} = ${result}`;
+  log.innerHTML = `${firstValue} ${storedOperation} ${secondValue} = ${result}`;
   log.classList.add('results');
+  log.addEventListener('click', recovery);
   archive.appendChild(log);
   resultlog.appendChild(archive);
 }
@@ -119,13 +115,23 @@ function logTheResult(result) {
  * for further use.
  */
 function recoverResult(archive) {
-  calc.firstValue = archive.firstValue;
-  calc.secondValue = archive.secondValue;
-  calc.calcTrack.textContent = `${archive.firstValue} ${archive.storedOperation} ${archive.secondValue} =`;
-  calc.text.textContent = archive.result;
+  firstValue = archive.firstValue;
+  secondValue = archive.secondValue;
+  calcTracker.textContent = `${archive.firstValue} ${archive.storedOperation} ${archive.secondValue} =`;
+  input.textContent = archive.result;
 }
 
-document.body.addEventListener('click', (e) => {
+function recovery(e) {
+  const divided = e.target.textContent.split(' ');
+  const archive = {
+    firstValue: divided[0],
+    storedOperation: divided[1],
+    secondValue: divided[2],
+    result: divided[4],
+  };
+  recoverResult(archive);
+}
+/* document.body.addEventListener('click', (e) => {
   if (e.target.classList.value === 'results') {
     const divided = e.target.textContent.split(' ');
     const archive = {
@@ -136,7 +142,7 @@ document.body.addEventListener('click', (e) => {
     };
     recoverResult(archive);
   }
-});
+}); */
 
 /**
  * This function checks the conditions on whether a calculation
@@ -145,31 +151,29 @@ document.body.addEventListener('click', (e) => {
  * Finally it logs the result with the help of the logTheResult fucntion.
  */
 function execute() {
-  if (calc.firstValue === '' || calc.storedOperation === '') {
+  if (firstValue === '' || storedOperation === '') {
     return;
   }
   if (!calc.equalToggle) {
     calc.equalToggle = true;
-    calc.secondValue = Number(calc.text.textContent);
+    secondValue = Number(input.textContent);
   }
-  calc.update();
   const result = calc.calculate();
   if (result === 'Infinity') {
-    calc.text.textContent = 'Nice try';
-    calc.calcTrack.textContent = "That's infinite";
+    input.textContent = 'Nice try';
+    calcTracker.textContent = "That's infinite";
     logTheResult('Nice try');
     calc.newNumberToggle = true;
     calc.equalToggle = false;
-    calc.storedOperation = '';
-    calc.operatorHistory = [];
-    calc.firstValue = '';
-    calc.secondValue = '';
+    storedOperation = '';
+    firstValue = '';
+    secondValue = '';
   } else {
     logTheResult(result);
-    calc.calcTrack.textContent = `${calc.firstValue} ${calc.storedOperation} ${calc.secondValue} =`;
-    calc.firstValue = result;
-    calc.text.textContent = result;
-    calc.storedOperation = '';
+    calcTracker.textContent = `${firstValue} ${storedOperation} ${secondValue} =`;
+    firstValue = result;
+    input.textContent = result;
+    storedOperation = '';
   }
 }
 
@@ -178,17 +182,17 @@ function execute() {
  * to allow the logic to allow a legal calculation.
  */
 function control(operation) {
-  if (calc.storedOperation && !calc.newNumberToggle) {
+  if (storedOperation && !calc.newNumberToggle) {
     execute();
-    calc.storedOperation = operation;
+    storedOperation = operation;
     calc.newNumberToggle = true;
     return;
   }
-  calc.storedOperation = operation;
+  storedOperation = operation;
   calc.newNumberToggle = true;
   calc.startToggle = false;
-  calc.firstValue = Number(calc.text.textContent);
-  calc.calcTrack.textContent = `${calc.firstValue} ${calc.storedOperation}`;
+  firstValue = Number(input.textContent);
+  calcTracker.textContent = `${firstValue} ${storedOperation}`;
 }
 
 // An eventlistener to prevent the default action of /
@@ -213,12 +217,12 @@ operations.forEach((operation) => {
 });
 
 function decimal() {
-  if (!calc.text.textContent.includes('.')) {
-    if (Number(calc.text.textContent) === 0) {
-      calc.text.textContent = '0.';
+  if (!input.textContent.includes('.')) {
+    if (Number(input.textContent) === 0) {
+      input.textContent = '0.';
       calc.startToggle = false;
-    } else if (calc.secondValue === '' && calc.storedOperation !== '') {
-      calc.text.textContent = '0.';
+    } else if (secondValue === '' && storedOperation !== '') {
+      input.textContent = '0.';
       calc.newNumberToggle = false;
     } else {
       calc.addNumber('.');
