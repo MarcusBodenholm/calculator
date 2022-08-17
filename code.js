@@ -4,14 +4,6 @@ import round from "./modules/round.js"
 import remove from "./modules/remove.js"
 import clickEffect from "./modules/clickEffect.js";
 
-/**
- * The calc object literal houses almost all the variables the
- * calculator is driven on. It also contains a number of methods
- * that executes the calculations.
- * Admittedly the way that the +-/* methods are done is not
- * optimal for such simple executions, but they are mainly done so
- * for experimentation.
- */
 let input = document.getElementById('query');
 let calcTracker = document.getElementById('calculationTracker');
 let firstValue = '';
