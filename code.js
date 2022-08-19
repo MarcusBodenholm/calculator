@@ -165,7 +165,6 @@ function execute() {
     calcTracker.textContent = `${firstValue} ${storedOperation} ${secondValue} =`;
     firstValue = result;
     input.textContent = result;
-    storedOperation = '';
   }
 }
 
@@ -174,9 +173,9 @@ function execute() {
  * to allow the logic to allow a legal calculation.
  */
 function control(operation) {
-  if (storedOperation && !calc.newNumberToggle) {
-    execute();
+  if (storedOperation && !calc.newNumberToggle && storedOperation === operation) {
     storedOperation = operation;
+    execute();
     calc.newNumberToggle = true;
     return;
   }
@@ -237,7 +236,8 @@ window.addEventListener('keydown', (e) => {
   if (Number(e.key) > -1 && Number(e.key) < 10) {
     calc.addNumber(Number(e.key));
     clickEffect(e);
-  } else if (e.key === '/' || e.key === '*'
+  }
+  if (e.key === '/' || e.key === '*'
     || e.key === '-' || e.key === '+' || e.key === 'Enter') {
     if (e.key === 'Enter') {
       execute();
@@ -246,10 +246,12 @@ window.addEventListener('keydown', (e) => {
       control(e.key);
       clickEffect(e);
     }
-  } else if (e.key === ',' || e.key === '.') {
+  }
+  if (e.key === ',' || e.key === '.') {
     decimal();
     clickEffect(e);
-  } else if (e.key === 'Backspace') {
+  }
+  if (e.key === 'Backspace') {
     remove();
     clickEffect(e);
   }
