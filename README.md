@@ -3,7 +3,7 @@
 A project to make a calculator using HTML, CSS & JavaScript, as part of the Odin Project. 
 This calculator includes a log with all your calculations, and much like the Windows calculator, you can click on a result to bring it back and continue using it for further calculations!
 
-**Live preview:** [here](https://shedcape.github.io/calculator/)
+**Live preview:** [here](https://marcusbodenholm.github.io/calculator/)
 
 ## Built using
 
